@@ -2,10 +2,16 @@ const User = require('../models/userModel');
 
 // Get all users
 exports.getUsers = async (req, res) => {
+  // console.log("get");
+  
   try {
+    // console.log("getting Users");
     const users = await User.find();
+    // console.log("Got");
+    // console.log(users);
     res.status(200).json(users);
   } catch (error) {
+    // console.log("catch");
     res.status(500).json({ message: error.message });
   }
 };
@@ -24,10 +30,24 @@ exports.searchUsers = async (req, res) => {
 // Approve user account
 exports.approveUser = async (req, res) => {
   const { id } = req.params;
+
   try {
-    const user = await User.findByIdAndUpdate(id, { isApproved: true }, { new: true });
+    // console.log(`Attempting to approve user with ID: ${id}`);
+    const user = await User.findByIdAndUpdate(
+      id,
+      { isApproved: true, isBlocked: false },
+      { new: true }
+    );
+
+    if (!user) {
+      // console.error('User not found');
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // console.log('User approved successfully:', user);
     res.status(200).json(user);
   } catch (error) {
+    console.error('Error approving user:', error.message);
     res.status(500).json({ message: error.message });
   }
 };
@@ -35,13 +55,28 @@ exports.approveUser = async (req, res) => {
 // Block/Suspend user account
 exports.blockUser = async (req, res) => {
   const { id } = req.params;
+
   try {
-    const user = await User.findByIdAndUpdate(id, { isBlocked: true }, { new: true });
+    console.log(`Attempting to block user with ID: ${id}`);
+    const user = await User.findByIdAndUpdate(
+      id,
+      { isBlocked: true, isApproved: false },
+      { new: true }
+    );
+
+    if (!user) {
+      console.error('User not found');
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    console.log('User blocked successfully:', user);
     res.status(200).json(user);
   } catch (error) {
+    console.error('Error blocking user:', error.message);
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // Set permissions
 exports.setPermissions = async (req, res) => {

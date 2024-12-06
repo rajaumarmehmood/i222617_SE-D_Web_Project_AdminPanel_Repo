@@ -7,6 +7,7 @@ const {
 const router = express.Router();
 
 router.get('/', getUsers);
+// router.get('users/', getUsers);
 router.get('/search/:query', searchUsers);
 router.put('/approve/:id', approveUser);
 router.put('/block/:id', blockUser);
