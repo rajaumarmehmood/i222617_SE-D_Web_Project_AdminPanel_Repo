@@ -1,4 +1,5 @@
 const express = require('express');
+const { protect } = require('../middlewares/authMiddleware');
 const router = express.Router();
 const {
     getAllProperties,
@@ -10,7 +11,7 @@ const {
 // Property routes
 router.get('/', getAllProperties);
 router.get('/search', searchProperties);
-router.delete('/:id', deleteProperty);
+router.delete('/:id', protect, deleteProperty);
 router.get('/:id', getPropertyById);
 
 module.exports = router;

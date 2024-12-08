@@ -1,4 +1,5 @@
 const express = require('express');
+const { protect } = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 // Mock storage (replace with a database in production)
@@ -13,7 +14,7 @@ router.get('/', (req, res) => {
 });
 
 // Update settings
-router.put('/', (req, res) => {
+router.put('/', protect, (req, res) => {
   const { termsAndPolicies, isDarkMode } = req.body;
   if (termsAndPolicies !== undefined) platformSettings.termsAndPolicies = termsAndPolicies;
   if (isDarkMode !== undefined) platformSettings.isDarkMode = isDarkMode;
